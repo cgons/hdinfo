@@ -136,7 +136,7 @@ nvme0p1 Samsung 990 Pro    /            1.8T      200G       1.6T       11% / 89
 ## AI Usage
 AI usage was limited to the following areas:
 - README updates
-- Parsing of raw output via regex patterns
+- Generation of regex patterns to parse disk info
 
 ## License
 
