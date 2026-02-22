@@ -7,6 +7,7 @@ import (
 
 func Register() *urfcli.Command {
 	return &urfcli.Command{
+		Name:  "hdinfo",
 		Usage: "Displays hard drive details: size, model, mounts etc...",
 		UsageText: `Note: hdinfo depends on tools like lsblk, hdparm and smartmontools.
 		  (Please ensure required tools are installed system-wide)
