@@ -46,6 +46,30 @@ func GetDiskDetails(opts GetDiskDetailsOptions) (*[]DiskDetails, error) {
 	return diskDetails, nil
 }
 
+type StatTotals struct {
+	Total   int
+	Active  int
+	Standby int
+	Unknown int
+}
+
+// UpdateDiskStatTotals updates the given StatTotals based on a single DiskDetails entry.
+// It should be called from within a loop iterating over disk details.
+func UpdateDiskStatTotals(totals *StatTotals, d DiskDetails) {
+	if d.Type != "disk" {
+		return
+	}
+	totals.Total++
+	switch d.State {
+	case "active/idle":
+		totals.Active++
+	case "standby", "sleeping":
+		totals.Standby++
+	case "unknown":
+		totals.Unknown++
+	}
+}
+
 // Utility Functions
 // ----------------------------------------------
 func getRawDiskDetails() *bytes.Buffer {

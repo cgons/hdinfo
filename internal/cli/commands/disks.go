@@ -26,7 +26,7 @@ func DisksCommand() *urfcli.Command {
 			&urfcli.BoolFlag{
 				Name:    "silent",
 				Aliases: []string{"s"},
-				Usage:   "Suppress informational notes in output",
+				Usage:   "Suppress header and informational notes in output",
 			},
 			&urfcli.BoolFlag{
 				Name:  "smart-data",
@@ -35,6 +35,10 @@ func DisksCommand() *urfcli.Command {
 			&urfcli.BoolFlag{
 				Name:  "force",
 				Usage: "Wake sleeping disks to fetch SMART data (must be used with --smart-data)",
+			},
+			&urfcli.BoolFlag{
+				Name:  "no-stats",
+				Usage: "Hide disk statistics totals from output",
 			},
 		},
 	}
@@ -57,9 +61,14 @@ func disksCommandAction(ctx context.Context, cmd *urfcli.Command) error {
 		return nil
 	}
 
-	headerFormatter := color.New(color.Bold, color.Underline).SprintfFunc()
+	headerColor := color.New(color.Bold, color.Underline)
+	headerColor.EnableColor()
+	headerFormatter := headerColor.SprintfFunc()
+	textBlue := color.New(color.FgBlue).SprintFunc()
 	textGreen := color.New(color.FgGreen).SprintFunc()
 	textYellow := color.New(color.FgYellow).SprintFunc()
+	textWhite := color.New(color.FgWhite).SprintFunc()
+	textFaint := color.New(color.Faint).SprintFunc()
 
 	headers := []any{
 		headerFormatter("%s", "Name"),
@@ -81,48 +90,79 @@ func disksCommandAction(ctx context.Context, cmd *urfcli.Command) error {
 		return visibleRuneCount(s)
 	})
 
+	statTotals := diskservice.StatTotals{}
+
 	for _, disk := range *diskDetails {
 		if disk.Type != "disk" {
 			continue
 		}
 
+		// Populate the row with data + coloured output as necessary
 		row := []any{
 			disk.Name,
-			textGreen(disk.Model),
+			textBlue(disk.Model),
 			disk.Capacity,
 			disk.IsSSD,
 			disk.Interface,
-			disk.State,
+			colorizedState(disk.State, textGreen, textYellow, textWhite),
 		}
 
+		// Add SMART attribut columns if requested (via --smart-data flag)
 		if showSmart {
-			var tempVal string
-			tempVal = strconv.Itoa(disk.SmartDetails.TempCurrent)
-			if disk.SmartDetails.TempMin > 0 || disk.SmartDetails.TempMax > 0 {
-				tempVal = fmt.Sprintf("%d (Min/Max %d/%d)",
-					disk.SmartDetails.TempCurrent,
-					disk.SmartDetails.TempMin,
-					disk.SmartDetails.TempMax,
-				)
-			}
-			row = append(row, tempVal, disk.SmartDetails.PowerOnHours, disk.SmartDetails.PowerCycleCount)
+			row = append(row, smartDataColumns(disk.SmartDetails)...)
 		}
 
 		tbl.AddRow(row...)
+		diskservice.UpdateDiskStatTotals(&statTotals, disk)
 	}
 
+	// Print header section
 	if !cmd.Bool("silent") {
 		println()
-		println("hdinfo -", utils.GetVersion(), "- github.com/cgons/hdinfo")
-		println("-----------------------------------------")
-		println(" - " + textYellow("--smart-data") + "  | view SMART data (temp, power-on-hours, etc...)")
-		println(" - " + textYellow("--force") + "       | wake sleep/standby disks and pull SMART data")
-		println(" - " + textYellow("-s") + " / " + textYellow("--silent") + " | silence these hints")
+		println(textFaint("hdinfo - ", utils.GetVersion(), " | github.com/cgons/hdinfo"))
+		println(textFaint("-----------------------------------------"))
+		println(textFaint("--help - to see all display options"))
 		println()
 	}
 
+	// Print table
 	tbl.Print()
 	println()
 
+	// Print footer section
+	if !cmd.Bool("no-stats") {
+		fmt.Printf(
+			"Totals: %d Disks | %s | %s\n",
+			statTotals.Total,
+			textGreen(fmt.Sprintf("%d Active", statTotals.Active)),
+			textYellow(fmt.Sprintf("%d Standby", statTotals.Standby)),
+		)
+		println()
+	}
+
 	return nil
+}
+
+// Helper Functions
+// ----------------
+
+func smartDataColumns(smart diskservice.SmartDetails) []any {
+	tempVal := strconv.Itoa(smart.TempCurrent)
+	if smart.TempMin > 0 || smart.TempMax > 0 {
+		tempVal = fmt.Sprintf("%d (Min/Max %d/%d)", smart.TempCurrent, smart.TempMin, smart.TempMax)
+	}
+	return []any{tempVal, smart.PowerOnHours, smart.PowerCycleCount}
+}
+
+func colorizedState(state string, green, yellow, white func(a ...interface{}) string) string {
+	switch state {
+	case "active/idle":
+		return green(state)
+	case "standby", "sleeping":
+		return yellow(state)
+	case "unknown":
+		return white(state)
+	default:
+		return state
+	}
 }

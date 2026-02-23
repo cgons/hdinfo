@@ -32,7 +32,9 @@ func mountsCommandAction(ctx context.Context, cmd *urfcli.Command) error {
 		return nil
 	}
 
-	headerFormatter := color.New(color.Bold, color.Underline).SprintfFunc()
+	headerColor := color.New(color.Bold, color.Underline)
+	headerColor.EnableColor() // force color/styling for header row
+	headerFormatter := headerColor.SprintfFunc()
 	modelGreen := color.New(color.FgGreen).SprintFunc()
 
 	tbl := table.New(
