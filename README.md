@@ -22,23 +22,20 @@ A command-line utility for Linux that displays hard drive details including disk
 | `hdparm` | `hdparm` | Query disk state (active/standby) |
 | `smartctl` | `smartmontools` | Read SMART attributes |
 
-**Debian/Ubuntu:**
-
 ```bash
+# Debian/Ubuntu
 sudo apt install util-linux hdparm smartmontools
-```
 
-**Arch Linux:**
-
-```bash
+# Arch Linux
 sudo pacman -S util-linux hdparm smartmontools
-```
 
-**Fedora/RHEL:**
-
-```bash
+# Fedora/RHEL
 sudo dnf install util-linux hdparm smartmontools
 ```
+
+Note: 
+- `hdinfo` is _only_ supported on Linux based systems (no Windows or MacOS)
+- `hdinfo` has only been tested on a Debian AMD64 system.  If you encounter bugs on another Linux variant or architecture (ARM64), please report it
 
 ## Installation
 
@@ -147,7 +144,9 @@ nvme0p1 Samsung 990 Pro    /            1.8T      200G       1.6T       11% / 89
 AI usage was limited to the following areas:
 - README updates
 - Generation of regex patterns to parse disk info
+- Updates to colorized output
+- Addition of conveniece flags (--no-color, --no-stats)
 
 ## License
 
-MIT
+[MIT](https://github.com/cgons/hdinfo/blob/master/LICENSE)
