@@ -2,8 +2,14 @@
 
 # hdinfo
 
-A command-line utility for Linux that displays hard drive details including disk information, capacity, model, mount points, and SMART data (temperature, power-on hours, power cycle count).
 </div>
+
+A command-line utility for Linux that displays hard drive details including disk information, capacity, model, mount points, and SMART data (temperature, power-on hours, power cycle count).
+
+
+Quick Install:  
+`curl -fsSL https://raw.githubusercontent.com/cgons/hdinfo/master/install.sh | sudo bash`
+
 
 ## Features
 
