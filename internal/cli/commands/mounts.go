@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/cgons/hdinfo/internal/lib/utils"
-	"github.com/cgons/hdinfo/internal/services/diskservice"
+	"github.com/cgons/hdinfo/internal/lib/services/diskservice"
 	"github.com/fatih/color"
 	"github.com/rodaine/table"
 	urfcli "github.com/urfave/cli/v3"

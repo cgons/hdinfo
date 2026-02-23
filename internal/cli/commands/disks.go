@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/cgons/hdinfo/internal/lib/utils"
-	"github.com/cgons/hdinfo/internal/services/diskservice"
+	"github.com/cgons/hdinfo/internal/lib/services/diskservice"
 	"github.com/fatih/color"
 	"github.com/rodaine/table"
 	"github.com/urfave/cli/v3"
