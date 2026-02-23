@@ -113,7 +113,7 @@ func disksCommandAction(ctx context.Context, cmd *urfcli.Command) error {
 
 	if !cmd.Bool("silent") {
 		println()
-		println("hdinfo -", "github.com/cgons/hdinfo")
+		println("hdinfo -", utils.GetVersion(), "- github.com/cgons/hdinfo")
 		println("-----------------------------------------")
 		println(" - " + textYellow("--smart-data") + "  | view SMART data (temp, power-on-hours, etc...)")
 		println(" - " + textYellow("--force") + "       | wake sleep/standby disks and pull SMART data")

@@ -2,10 +2,20 @@ package utils
 
 import (
 	"bytes"
+	_ "embed"
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
+
+//go:embed VERSION
+var versionContent string
+
+func GetVersion() string {
+	version := strings.TrimSpace(versionContent)
+	return fmt.Sprintf("v%s", version)
+}
 
 func IsRoot() bool {
 	return os.Geteuid() == 0
