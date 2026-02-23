@@ -1,4 +1,6 @@
 .idea/
 
 /hdinfo
+/hdinfo-linux-amd64
+/hdinfo-linux-arm64
 *_temp_output.json
