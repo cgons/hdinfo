@@ -110,16 +110,19 @@ func disksCommandAction(ctx context.Context, cmd *urfcli.Command) error {
 
 		tbl.AddRow(row...)
 	}
-	tbl.Print()
-	println()
 
 	if !cmd.Bool("silent") {
-		println("Options:")
+		println()
+		println("hdinfo -", "github.com/cgons/hdinfo")
+		println("-----------------------------------------")
 		println(" - " + textYellow("--smart-data") + "  | view SMART data (temp, power-on-hours, etc...)")
 		println(" - " + textYellow("--force") + "       | wake sleep/standby disks and pull SMART data")
 		println(" - " + textYellow("-s") + " / " + textYellow("--silent") + " | silence these hints")
 		println()
 	}
+
+	tbl.Print()
+	println()
 
 	return nil
 }
