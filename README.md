@@ -62,6 +62,12 @@ go build -o hdinfo ./cmd/hdinfo
 
 > **Note:** `hdinfo` requires root privileges. All commands must be run with `sudo`.
 
+### Global Options
+
+| Flag | Description |
+|------|-------------|
+| `--no-color` | Disable colorized output |
+
 ### `hdinfo disks`
 
 List all system disks and their details.
@@ -77,6 +83,7 @@ sudo hdinfo disks [options]
 | `--smart-data` | | Include SMART data (temperature, power-on hours, power cycle count) |
 | `--force` | | Wake sleeping disks to fetch SMART data (requires `--smart-data`) |
 | `--silent` | `-s` | Suppress informational hints in the output |
+| `--no-stats` | | Hide disk statistics totals from output |
 | `--help` | `-h` | Show help |
 
 **Examples:**
@@ -93,6 +100,9 @@ sudo hdinfo disks --smart-data --force
 
 # Silent mode (no hints)
 sudo hdinfo disks -s --smart-data
+
+# Disable colors (useful when piping to a file)
+sudo hdinfo disks --no-color
 ```
 
 **Sample output:**
